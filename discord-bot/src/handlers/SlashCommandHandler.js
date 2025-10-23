@@ -34,7 +34,7 @@ class SlashCommandHandler extends CommandHandler {
       };
 
       // Call the specific webhook for nutrition analysis (fire and forget)
-      const url = 'http://localhost:5678/webhook-test/a5d6da3f-8c74-4a42-9455-9a084ccb5354';
+      const url = `${this.n8nService.baseUrl}/webhook-test/a5d6da3f-8c74-4a42-9455-9a084ccb5354`;
       this.n8nService.client.post(url, payload).catch(error => {
         console.error('Error sending nutrition analysis to n8n:', error.message);
       });

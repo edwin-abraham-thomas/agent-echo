@@ -49,7 +49,7 @@ class BotFactory {
     const interactionEventHandler = new InteractionEventHandler(slashCommandHandler);
 
     // Register event listeners
-    client.on('ready', () => readyEventHandler.handle(client));
+    client.on('clientReady', () => readyEventHandler.handle(client));
     client.on('messageCreate', (message) => messageEventHandler.handle(message));
     client.on('interactionCreate', (interaction) => interactionEventHandler.handle(interaction));
 
