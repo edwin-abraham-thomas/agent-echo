@@ -13,6 +13,36 @@ class SlashCommandHandler extends CommandHandler {
   }
 
   /**
+   * Handle analyse-nutrition command
+   * @param {ChatInputCommandInteraction} interaction
+   */
+  async handleAnalyseNutrition(interaction) {
+    const message = interaction.options.getString('message');
+
+    try {
+      // Acknowledge the command immediately without waiting for response
+      await interaction.reply('🥗 Analyzing nutrition information...');
+
+      // Build payload with the message
+      const payload = {
+        message: message,
+        ...DiscordContextBuilder.fromInteraction(interaction),
+      };
+
+      // Call the specific webhook for nutrition analysis (fire and forget)
+      const url = 'http://localhost:5678/webhook-test/a5d6da3f-8c74-4a42-9455-9a084ccb5354';
+      this.n8nService.client.post(url, payload).catch(error => {
+        console.error('Error sending nutrition analysis to n8n:', error.message);
+      });
+
+      // Don't wait for response - n8n will post the result back to Discord
+    } catch (error) {
+      console.error('Error with analyse-nutrition command:', error.message);
+      await interaction.reply(`❌ Failed to process command: ${error.message}`);
+    }
+  }
+
+  /**
    * Handle ping command
    * @param {ChatInputCommandInteraction} interaction
    */

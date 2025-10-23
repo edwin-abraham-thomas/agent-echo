@@ -49,6 +49,10 @@ class InteractionEventHandler {
         await this.slashCommandHandler.handleHelp(interaction);
         break;
 
+      case 'analyse-nutrition':
+        await this.slashCommandHandler.handleAnalyseNutrition(interaction);
+        break;
+
       default:
         await interaction.reply('Unknown command.');
     }

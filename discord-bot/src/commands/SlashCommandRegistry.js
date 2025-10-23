@@ -26,6 +26,14 @@ class SlashCommandRegistry {
       new SlashCommandBuilder()
         .setName('help')
         .setDescription('Show available commands'),
+      new SlashCommandBuilder()
+        .setName('analyse-nutrition')
+        .setDescription('Analyze nutrition information from a message')
+        .addStringOption(option =>
+          option.setName('message')
+            .setDescription('The message to analyze for nutrition information')
+            .setRequired(true)
+        ),
     ];
   }
 

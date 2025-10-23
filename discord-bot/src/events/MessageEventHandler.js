@@ -51,6 +51,10 @@ class MessageEventHandler {
         await this.prefixCommandHandler.handleHelp(message);
         break;
 
+      case 'analyse-nutrition':
+        await this.prefixCommandHandler.handleAnalyseNutrition(message, args);
+        break;
+
       default:
         await message.reply('Unknown command. Use `!help` for available commands.');
     }

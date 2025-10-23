@@ -75,26 +75,83 @@ class PrefixCommandHandler extends CommandHandler {
 **Available Commands:**
 \`!ping\` - Check if bot is alive
 \`!trigger\` - Trigger n8n webhook
+\`!analyse-nutrition\` - Analyze nutrition information
 \`!help\` - Show this message
 
 **Slash Commands (recommended):**
 \`/ping\` - Check if bot is alive
 \`/trigger\` - Trigger n8n webhook
+\`/analyse-nutrition\` - Analyze nutrition information
 \`/help\` - Show this message
 
 **Examples:**
 \`!trigger my-workflow\`
 \`!trigger my-workflow {"key": "value"}\`
+\`!analyse-nutrition Apple with skin contains 95g water\`
 
 **Bot Features:**
 • Direct integration with n8n workflows
 • Support for custom JSON payloads
 • Discord message context passed to n8n
+• Nutrition analysis integration
 
 For more information, check the documentation.
     `;
     await message.reply(helpText);
   }
+
+  /**
+   * Handle analyse-nutrition command
+   * @param {Message} message
+   * @param {string[]} args - Command arguments
+   */
+  async handleAnalyseNutrition(message, args) {
+    if (args.length === 0) {
+      await message.reply('❌ Usage: `!analyse-nutrition <message>`');
+      return;
+    }
+
+    const nutritionMessage = args.join(' ');
+
+    try {
+      // Acknowledge the command immediately without waiting for response
+      await message.reply('🥗 Analyzing nutrition information...');
+
+      // Build payload with the message
+      const payload = {
+        message: nutritionMessage,
+        ...DiscordContextBuilder.fromMessage(message),
+      };
+
+      // Call the specific webhook for nutrition analysis (fire and forget)
+      const url = 'http://localhost:5678/webhook-test/a5d6da3f-8c74-4a42-9455-9a084ccb5354';
+      this.n8nService.client.post(url, payload).catch(error => {
+        console.error('Error sending nutrition analysis to n8n:', error.message);
+      });
+
+      // Don't wait for response - n8n will post the result back to Discord
+    } catch (error) {
+      console.error('Error with analyse-nutrition command:', error.message);
+      await message.reply(`❌ Failed to process command: ${error.message}`);
+    }
+  }
+
+  /**
+   * Format nutrition analysis response
+   * @param {string} resultText - Response text
+   * @returns {string} - Formatted response
+   */
+  formatNutritionResponse(resultText) {
+    if (resultText.length > 2000) {
+      return `🥗 **Nutrition Analysis Results:**\n\`\`\`\n${resultText.substring(0, 1997)}...\n\`\`\``;
+    }
+    return `🥗 **Nutrition Analysis Results:**\n\`\`\`json\n${resultText}\n\`\`\``;
+  }
+
+  /**
+   * Handle help command
+   * @param {Message} message
+   */
 
   /**
    * Format webhook response
