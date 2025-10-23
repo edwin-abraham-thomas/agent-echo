@@ -28,11 +28,16 @@ class SlashCommandRegistry {
         .setDescription('Show available commands'),
       new SlashCommandBuilder()
         .setName('analyse-nutrition')
-        .setDescription('Analyze nutrition information from a message')
+        .setDescription('Analyze nutrition information from an image')
+        .addAttachmentOption(option =>
+          option.setName('image')
+            .setDescription('Image to analyze for nutrition information')
+            .setRequired(true)
+        )
         .addStringOption(option =>
           option.setName('message')
-            .setDescription('The message to analyze for nutrition information')
-            .setRequired(true)
+            .setDescription('Additional message or context (optional)')
+            .setRequired(false)
         ),
     ];
   }

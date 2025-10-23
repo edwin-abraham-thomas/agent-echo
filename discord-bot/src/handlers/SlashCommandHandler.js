@@ -17,15 +17,19 @@ class SlashCommandHandler extends CommandHandler {
    * @param {ChatInputCommandInteraction} interaction
    */
   async handleAnalyseNutrition(interaction) {
+    const image = interaction.options.getAttachment('image');
     const message = interaction.options.getString('message');
 
     try {
       // Acknowledge the command immediately without waiting for response
       await interaction.reply('🥗 Analyzing nutrition information...');
 
-      // Build payload with the message
+      // Build payload with the image and optional message
       const payload = {
-        message: message,
+        imageUrl: image.url,
+        imageName: image.name,
+        imageSize: image.size,
+        message: message || '',
         ...DiscordContextBuilder.fromInteraction(interaction),
       };
 
@@ -105,22 +109,29 @@ class SlashCommandHandler extends CommandHandler {
   - \`webhook\` (required): Webhook path (e.g., my-workflow)
   - \`data\` (optional): JSON data to send
 
+\`/analyse-nutrition\` - Analyze nutrition from image
+  - \`image\` (required): Image to analyze
+  - \`message\` (optional): Additional context
+
 \`/help\` - Show this message
 
 **Legacy Prefix Commands (still supported):**
 \`!ping\` - Check if bot is alive
 \`!trigger <webhook-path> [json-data]\` - Trigger n8n webhook
+\`!analyse-nutrition [context text]\` - Analyze nutrition (attach image)
 \`!help\` - Show help
 
 **Examples:**
 \`/trigger webhook:my-workflow\`
 \`/trigger webhook:my-workflow data:{"key": "value"}\`
+\`/analyse-nutrition image:<image.jpg> message:optional context\`
 
 **Bot Features:**
 • Slash commands (recommended)
 • Prefix commands (legacy support)
 • Direct integration with n8n workflows
 • Support for custom JSON payloads
+• Image-based nutrition analysis
 • Discord user context passed to n8n
     `;
     await interaction.reply(helpText);
