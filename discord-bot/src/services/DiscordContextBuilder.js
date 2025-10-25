@@ -27,6 +27,7 @@ class DiscordContextBuilder {
     return {
       author: interaction.user.username,
       userId: interaction.user.id,
+      channelId: interaction.channelId,
       guildId: interaction.guildId,
       commandName: interaction.commandName,
     };
